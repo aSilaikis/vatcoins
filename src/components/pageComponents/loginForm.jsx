@@ -14,13 +14,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { loginFormSchema } from "./schemas/formSchemas";
+import { loginFormSchema } from "@/components/pageComponents/schemas/formSchemas";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,12 +42,14 @@ export function LoginForm() {
 
     setErrors({});
     setServerError("");
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache"
         },
         body: JSON.stringify({ email, password }),
       });
@@ -54,14 +60,17 @@ export function LoginForm() {
         throw new Error(data.error || "Login failed");
       }
 
-      console.log("Login successful:", data);
+      router.push("/dashboard");
+      router.refresh();
     } catch (error) {
       setServerError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger>
         <Button className="w-80 mt-3 h-11">Login</Button>
       </AlertDialogTrigger>
@@ -78,6 +87,7 @@ export function LoginForm() {
                   className="h-11 w-full"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
                 {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
               </div>
@@ -90,6 +100,7 @@ export function LoginForm() {
                   className="h-11 w-full"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
                 {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
               </div>
@@ -99,7 +110,7 @@ export function LoginForm() {
               <AlertDialogFooter className="mt-3 gap-3">
                 <AlertDialogCancel className="h-10 px-6">Cancel</AlertDialogCancel>
                 <Button type="submit" className="h-10 px-6" as={AlertDialogAction}>
-                  Continue
+                  {isLoading ? "Loading..." : "Login"}
                 </Button>
               </AlertDialogFooter>
             </form>

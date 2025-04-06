@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown } from 'lucide-react'
+import { TrendingUp, TrendingDown } from "lucide-react"
+import Link from "next/link"
 
 export default function CoinTable({ coins }) {
   return (
@@ -24,11 +25,14 @@ export default function CoinTable({ coins }) {
               </Badge>
             </TableCell>
             <TableCell>
-              <div className="flex items-center gap-3">
+              <Link
+                href={`/dashboard/${coin.uuid}`}
+                className="flex items-center gap-3 hover:underline cursor-pointer"
+              >
                 {coin.iconUrl && (
                   <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm">
                     <img
-                      src={coin.iconUrl || "/placeholder.svg"}
+                      src={coin.iconUrl}
                       alt={`${coin.name} icon`}
                       className="w-full h-full object-fill"
                       onError={(e) => {
@@ -41,7 +45,7 @@ export default function CoinTable({ coins }) {
                   <div className="font-medium">{coin.name}</div>
                   <div className="text-xs text-muted-foreground">Rank #{coin.rank}</div>
                 </div>
-              </div>
+              </Link>
             </TableCell>
             <TableCell>
               <Badge variant="secondary" className="font-mono">
@@ -54,9 +58,7 @@ export default function CoinTable({ coins }) {
                 ? Number.parseFloat(coin.price).toFixed(6)
                 : Number.parseFloat(coin.price).toFixed(2)}
             </TableCell>
-            <TableCell className="text-right font-mono">
-              ${Number.parseInt(coin.marketCap)}
-            </TableCell>
+            <TableCell className="text-right font-mono">${Number.parseInt(coin.marketCap)}</TableCell>
             <TableCell className="text-right">
               <div
                 className={`flex items-center justify-end gap-1 font-medium

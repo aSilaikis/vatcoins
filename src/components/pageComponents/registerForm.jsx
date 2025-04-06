@@ -14,7 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { registerFormSchema } from "./schemas/formSchemas";
+import { registerFormSchema } from "@/components/pageComponents/schemas/formSchemas";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,8 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,23 +46,29 @@ export function RegisterForm() {
 
     setErrors({});
     setServerError("");
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache"
         },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || "Registration failed");
       }
+
+      router.push("/dashboard");
     } catch (error) {
       setServerError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,6 +90,7 @@ export function RegisterForm() {
                   className="h-11 w-full"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
                 {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
               </div>
@@ -93,6 +103,7 @@ export function RegisterForm() {
                   className="h-11 w-full"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
                 {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
               </div>
@@ -105,6 +116,7 @@ export function RegisterForm() {
                   className="h-11 w-full"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isLoading}
                 />
                 {errors.confirmPassword && (
                   <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
@@ -116,7 +128,7 @@ export function RegisterForm() {
               <AlertDialogFooter className="mt-3 gap-3">
                 <AlertDialogCancel className="h-10 px-6">Cancel</AlertDialogCancel>
                 <Button type="submit" className="h-10 px-6" as={AlertDialogAction}>
-                  Continue
+                  {isLoading ? "Loading..." : "Register"}
                 </Button>
               </AlertDialogFooter>
             </form>
