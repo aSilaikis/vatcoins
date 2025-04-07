@@ -6,7 +6,7 @@ export default function Loading() {
     <div className="container mx-auto py-10 px-4">
       <Card className="border-none shadow-lg">
         <CardHeader className="pb-4">
-          <CardTitle className="text-3xl font-bold">Cryptocurrency Market</CardTitle>
+          <CardTitle className="text-3xl font-bold">vatCoins</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-20">
           <div className="relative">

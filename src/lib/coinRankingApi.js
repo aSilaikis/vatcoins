@@ -81,12 +81,15 @@ export async function fetchCoinPriceHistory(uuid, timePeriod = "1y") {
   }
 
   try {
-    const response = await fetch(`https://api.coinranking.com/v2/coin/${uuid}/history?timePeriod=${timePeriod}`, {
-      headers: {
-        "x-access-token": apiKey,
-        Accept: "application/json",
-      },
-    });
+    const response = await fetch(
+      `https://api.coinranking.com/v2/coin/${uuid}/history?timePeriod=${timePeriod}`,
+      {
+        headers: {
+          "x-access-token": apiKey,
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();

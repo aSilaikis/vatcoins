@@ -6,7 +6,7 @@ export default function Error({ error, loadCoins }) {
     <div className="container mx-auto py-10 px-4">
       <Card className="border-none shadow-lg">
         <CardHeader className="pb-4">
-          <CardTitle className="text-3xl font-bold">Cryptocurrency Market</CardTitle>
+          <CardTitle className="text-3xl font-bold">vatCoins</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-5 rounded-lg">
@@ -15,7 +15,7 @@ export default function Error({ error, loadCoins }) {
               <p className="text-sm mb-4">
                 Please check your API key and try again. Make sure your CoinRanking API key has sufficient permissions.
               </p>
-              <Button variant="outline" className="bg-white hover:bg-red-50" onClick={() => loadCoins(true)}>
+              <Button variant="outline" onClick={() => loadCoins(true)}>
                 Try Again
               </Button>
           </div>
