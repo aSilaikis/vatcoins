@@ -95,7 +95,6 @@ export default function CoinDescription() {
               </div>
             </div>
 
-            {/* Middle Section: Links */}
             <div className="w-1/4">
               <h3 className="text-2xl font-semibold mb-2">Links</h3>
               <div className="flex flex-wrap gap-2">
