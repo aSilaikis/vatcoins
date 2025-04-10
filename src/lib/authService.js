@@ -2,15 +2,12 @@ import { connectToDatabase } from "./mongodb";
 import { v4 as uuidv4 } from "uuid";
 import { hash, compare } from "bcryptjs";
 
-const SESSION_EXPIRY = 12 * 60 * 60 * 1000;
-
 const ensureIndexes = async (db) => {
   try {
     await db.collection("users").createIndex({ email: 1 }, { unique: true });
     await db.collection("users").createIndex({ id: 1 }, { unique: true });
     await db.collection("sessions").createIndex({ token: 1 }, { unique: true });
     await db.collection("sessions").createIndex({ userId: 1 });
-    await db.collection("sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
   } catch (error) {
     console.error("Error creating indexes:", error.message);
     throw error;
@@ -44,6 +41,7 @@ export const registerUser = async (email, password) => {
     id,
     email: email.toLowerCase(),
     password: hashedPassword,
+    watchlist: [],
     createdAt: new Date(),
   };
 
@@ -53,61 +51,33 @@ export const registerUser = async (email, password) => {
 
 export const loginUser = async (email, password) => {
   const db = await getDb();
-
   const user = await db.collection("users").findOne({
     email: { $regex: new RegExp(`^${email}$`, "i") },
   });
-
-  if (!user) {
-    throw new Error("Invalid email or password");
-  }
+  if (!user) throw new Error("Invalid email or password");
 
   const passwordMatch = await compare(password, user.password);
-  if (!passwordMatch) {
-    throw new Error("Invalid email or password");
-  }
-
-  await db.collection("sessions").deleteMany({
-    userId: user.id,
-    expiresAt: { $lt: new Date() },
-  });
+  if (!passwordMatch) throw new Error("Invalid email or password");
 
   const sessionToken = uuidv4();
   const session = {
     token: sessionToken,
     userId: user.id,
     createdAt: new Date(),
-    expiresAt: new Date(Date.now() + SESSION_EXPIRY),
     userAgent: process.env.NODE_ENV === "production" ? "production" : "development",
   };
 
   await db.collection("sessions").insertOne(session);
-
   return { id: user.id, email: user.email, sessionToken };
 };
 
 export const validateSession = async (sessionToken) => {
   const db = await getDb();
-
   const session = await db.collection("sessions").findOne({ token: sessionToken });
-  if (!session) {
-    throw new Error("Invalid session");
-  }
-
-  if (new Date(session.expiresAt) < new Date()) {
-    await db.collection("sessions").deleteOne({ token: sessionToken });
-    throw new Error("Session expired");
-  }
+  if (!session) throw new Error("Invalid session");
 
   const user = await db.collection("users").findOne({ id: session.userId });
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  await db.collection("sessions").updateOne(
-    { token: sessionToken },
-    { $set: { expiresAt: new Date(Date.now() + SESSION_EXPIRY) } }
-  );
+  if (!user) throw new Error("User not found");
 
   return { id: user.id, email: user.email };
 };
@@ -124,4 +94,67 @@ export const logoutUser = async (sessionToken) => {
     message: result.deletedCount > 0 ? "Session deleted successfully" : "Session not found",
     deletedCount: result.deletedCount,
   };
+};
+
+export const addToWatchlist = async (userId, coinUuid) => {
+  const db = await getDb();
+  
+  const user = await db.collection("users").findOne({ id: userId });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!user.watchlist) {
+    await db.collection("users").updateOne(
+      { id: userId },
+      { $set: { watchlist: [] } }
+    );
+  }
+
+  const result = await db.collection("users").updateOne(
+    { id: userId },
+    { $addToSet: { watchlist: coinUuid } }
+  );
+
+  return {
+    message: "Coin added to watchlist",
+    modifiedCount: result.modifiedCount
+  };
+};
+
+export const removeFromWatchlist = async (userId, coinUuid) => {
+  const db = await getDb();
+  
+  const user = await db.collection("users").findOne({ id: userId });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const result = await db.collection("users").updateOne(
+    { id: userId },
+    { $pull: { watchlist: coinUuid } }
+  );
+
+  return {
+    message: "Coin removed from watchlist",
+    modifiedCount: result.modifiedCount
+  };
+};
+
+export const getUserWatchlist = async (userId) => {
+  const db = await getDb();
+  
+  const user = await db.collection("users").findOne({ id: userId });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (!user.watchlist) {
+    await db.collection("users").updateOne(
+      { id: userId },
+      { $set: { watchlist: [] } }
+    );
+    return [];
+  }
+  return user.watchlist;
 };

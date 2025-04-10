@@ -129,7 +129,7 @@ export default function HistoryChart({ uuid }) {
   if (error) return <Error error={error} loadCoins={() => loadPriceHistory(timePeriod)} />
 
   return (
-    <Card className="w-[95%] mx-auto mt-4">
+    <Card className="w-[95%] mx-auto mt-2 gap-2">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl">Price History</CardTitle>
@@ -137,7 +137,7 @@ export default function HistoryChart({ uuid }) {
       </CardHeader>
       <CardContent>
         <Tabs value={timePeriod} onValueChange={setTimePeriod} className="w-full">
-          <TabsList className="flex justify-start mb-4 overflow-x-auto">
+          <TabsList className="flex justify-start mb-2 overflow-x-auto">
             {timePeriods.map((period) => (
               <TabsTrigger key={period} value={period} className="data-[state=active]:bg-muted">
                 {period}

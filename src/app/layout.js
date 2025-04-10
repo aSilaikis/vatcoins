@@ -1,9 +1,10 @@
 import "./globals.css";
 import DarkModeToggle from './DarkModeToggle';
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata = {
   title: "vatCoins",
-  description: "Website that shows information about crypto coins",
+  description: "Explore detailed information about various cryptocurrencies, including historical data",
 };
 
 export default function RootLayout({ children }) {
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className="bg-accent">
         {children}
+        <Analytics />
         <DarkModeToggle />
       </body>
     </html>

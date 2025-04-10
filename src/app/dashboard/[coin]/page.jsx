@@ -7,6 +7,8 @@ import Error from "@/components/dashboardComponents/error";
 import { fetchCoinDetails } from "@/lib/coinRankingApi";
 import SparklineChart from "@/components/descriptionComponents/sparklineChart";
 import HistoryChart from "@/components/descriptionComponents/historyChart";
+import { Save, SaveOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const REFRESH_INTERVAL = 5 * 60 * 1000;
 
@@ -27,6 +29,7 @@ export default function CoinDescription() {
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [uuid, setUuid] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   const loadCoinData = async (uuid) => {
     try {
@@ -42,30 +45,96 @@ export default function CoinDescription() {
     }
   };
 
+  const checkWatchlist = async (pathUuid) => {
+    try {
+      const response = await fetch("/api/watchlist", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch watchlist");
+      }
+
+      const { watchlist: uuidList } = await response.json();
+      const isCoinSaved = uuidList.includes(pathUuid);
+      setIsSaved(isCoinSaved);
+    } catch (err) {
+      setError(err.message || "Failed to check watchlist");
+    }
+  };
+
   useEffect(() => {
     const pathUuid = window.location.pathname.split("/dashboard/").pop();
     setUuid(pathUuid);
-    loadCoinData(pathUuid);
+
+    const initializeData = async () => {
+      await loadCoinData(pathUuid);
+      await checkWatchlist(pathUuid);
+    };
+    initializeData();
+
     const interval = setInterval(() => {
       loadCoinData(pathUuid);
     }, REFRESH_INTERVAL);
+
     return () => clearInterval(interval);
   }, []);
+
+  const toggleSave = async () => {
+    try {
+      const endpoint = "/api/watchlist";
+      const method = isSaved ? "DELETE" : "POST";
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ coinUuid: uuid }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update watchlist");
+      }
+
+      setIsSaved(!isSaved);
+    } catch (err) {
+      setError(err.message || "Failed to update watchlist");
+    }
+  };
 
   if (isLoading) return <Loading />;
   if (error) return <Error error={error} loadCoins={() => loadCoinData(uuid)} />;
 
   return (
     <>
-      <Card className="flex w-[95%] mx-auto">
+      <Card className="flex w-[95%] mx-auto gap-2">
         <CardHeader>
-          <CardTitle className="text-3xl">
-            {coinDetails.name} ({coinDetails.symbol})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-3xl">
+              {coinDetails.name} ({coinDetails.symbol})
+            </CardTitle>
+            <Button
+              onClick={toggleSave}
+              className="w-12 h-12 rounded-full"
+            >
+              {isSaved ? (
+                <SaveOff className="w-6 h-6" />
+              ) : (
+                <Save className="w-6 h-6" />
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-row gap-1 justify-between w-full">
-            {/* Left Section: Icon and More Details */}
+
             <div className="flex flex-row items-center w-1/3 gap-10">
               <img
                 src={coinDetails.iconUrl}
@@ -79,7 +148,11 @@ export default function CoinDescription() {
                 <p className="text-md"><span className="text-lg font-semibold ">Rank:</span> {coinDetails.rank}</p>
                 <p className="text-md">
                   <span className="text-lg font-semibold">Change: </span>
-                  <span className={`${coinDetails.change >= 0 ? "text-green-500" : "text-red-500"} font-semibold`}>
+                  <span
+                    className={`${
+                      coinDetails.change >= 0 ? "text-green-500" : "text-red-500"
+                    } font-semibold`}
+                  >
                     {coinDetails.change}%
                   </span>
                 </p>
@@ -112,13 +185,11 @@ export default function CoinDescription() {
               </div>
             </div>
 
-            {/* Right Section: Sparkline */}
             <div className="w-1/3">
               <SparklineChart coinDetails={coinDetails} />
             </div>
           </div>
 
-          {/* Last Updated */}
           <p className="text-sm text-gray-500 mt-4">
             Last Updated: {lastUpdated}
           </p>

@@ -52,7 +52,7 @@ export default function CoinsPage() {
   if (error) return <Error error={error} loadCoins={loadCoins} />;
 
   return (
-    <div className="container mx-auto py-1 px-4">
+    <div className="container mx-auto px-2">
       <CoinCard lastUpdated={lastUpdated} coins={coins} loadCoins={loadCoins} />
     </div>
   );

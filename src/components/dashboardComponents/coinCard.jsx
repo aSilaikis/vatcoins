@@ -33,51 +33,58 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
   };
 
   return (
-    <Card className="border-none shadow-lg py-2 px-1">
-      <CardHeader className="pb-4 border-b">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <CardTitle className="text-3xl font-bold">Cryptocurrency Market</CardTitle>
-            <p className="text-muted-foreground mt-1">
-              Top {coins.length} cryptocurrencies by market cap
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {lastUpdated && (
-              <span className="text-xs text-muted-foreground">Last updated: {lastUpdated}</span>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => loadCoins(true)}
-              className="flex items-center gap-1"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span>Refresh</span>
-            </Button>
+    <Card className="border-none shadow-lg w-full mx-auto">
+      <CardHeader className="border-b px-4 sm:px-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <CardTitle className="text-2xl sm:text-3xl font-bold">
+                Cryptocurrency Market
+              </CardTitle>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Top {coins.length} cryptocurrencies
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap justify-end">
+              {lastUpdated && (
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  Last updated: {lastUpdated}
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => loadCoins(true)}
+                className="flex items-center gap-1"
+              >
+                <RefreshCw className="h-4 w-4" />
+                <span>Refresh</span>
+              </Button>
+            </div>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="flex items-center py-1 px-3 border-b">
-          <p className="text-sm text-muted-foreground">Select a coin to see details</p>
+        <div className="flex items-center px-3 sm:px-6 border-b">
+          <p className="text-sm text-muted-foreground">Select a coin for details</p>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto px-2 sm:px-4">
           <CoinTable coins={paginatedCoins} />
         </div>
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t">
-          <div className="text-sm text-muted-foreground">
+
+        <div className="flex flex-col gap-4 p-4 border-t">
+          <div className="text-sm text-muted-foreground text-center sm:text-left">
             Showing {(currentPage - 1) * limitPerPage + 1}-
             {Math.min(currentPage * limitPerPage, coins.length)} of {coins.length} coins
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap justify-center items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               disabled={currentPage === 1}
               onClick={() => handlePageChange(1)}
-              className="flex items-center justify-center w-9 h-9 p-0"
+              className="w-8 h-8 p-0"
             >
               <ChevronsLeft className="h-4 w-4" />
             </Button>
@@ -86,12 +93,12 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
               size="sm"
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}
-              className="flex items-center gap-1"
+              className="w-8 h-8 p-0"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap justify-center">
               {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
                 let pageNum;
                 if (totalPages <= 5) {
@@ -109,7 +116,7 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
                     key={i}
                     variant={pageNum === currentPage ? "default" : "outline"}
                     size="sm"
-                    className="w-9 h-9 p-0"
+                    className="w-8 h-8 p-0"
                     onClick={() => handlePageChange(pageNum)}
                   >
                     {pageNum}
@@ -123,7 +130,7 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
               size="sm"
               disabled={currentPage === totalPages}
               onClick={() => handlePageChange(currentPage + 1)}
-              className="flex items-center gap-1"
+              className="w-8 h-8 p-0"
             >
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -132,7 +139,7 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
               size="sm"
               disabled={currentPage === totalPages}
               onClick={() => handlePageChange(totalPages)}
-              className="flex items-center justify-center w-9 h-9 p-0"
+              className="w-8 h-8 p-0"
             >
               <ChevronsRight className="h-4 w-4" />
             </Button>

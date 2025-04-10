@@ -106,7 +106,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#">
+                    <a href="/watchlist">
                       <Bitcoin className="mr-2 h-6 w-6" /> Watchlist
                     </a>
                   </SidebarMenuButton>

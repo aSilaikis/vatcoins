@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/dashboardComponents/dashboardSidebar"
 
 export const metadata = {
-  title: "vatCoins - Dashboard",
+  title: "vatCoins - Watchlist",
   description: "Explore detailed information about various cryptocurrencies, including historical data",
 }
 

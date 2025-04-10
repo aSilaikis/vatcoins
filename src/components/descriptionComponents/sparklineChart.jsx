@@ -29,8 +29,8 @@ export default function SparklineChart({ coinDetails }) {
       currency: "USD",
       minimumFractionDigits: 2,
       maximumFractionDigits: value < 1 ? 6 : 2,
-    }).format(value)
-  }
+    }).format(value);
+  };
 
   const chartData = coinDetails.sparkline?.map((price, index) => ({
     time: formatTimestamp(sparklineTimestamps[index]),
@@ -48,6 +48,8 @@ export default function SparklineChart({ coinDetails }) {
 
   const chartColor = coinDetails.change >= 0 ? "hsl(120, 60%, 50%)" : "hsl(0, 60%, 50%)";
 
+  const gradientId = `fillPrice-${coinDetails.uuid}`;
+
   const chartSparklineConfig = {
     price: {
       label: "Price",
@@ -64,7 +66,7 @@ export default function SparklineChart({ coinDetails }) {
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
         >
           <defs>
-            <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={chartColor} stopOpacity={0.8} />
               <stop offset="95%" stopColor={chartColor} stopOpacity={0.1} />
             </linearGradient>
@@ -74,7 +76,7 @@ export default function SparklineChart({ coinDetails }) {
           <YAxis hide domain={yAxisDomain} />
           <Tooltip
             formatter={(value) => [formatTooltipValue(value), "Price"]}
-            labelFormater="Sparkline"
+            labelFormatter={() => `Coin: ${coinDetails.name}`}
             contentStyle={{
               backgroundColor: "rgba(0,0,0,0.8)",
               border: "1px solid rgba(255,255,255,0.2)",
@@ -86,7 +88,7 @@ export default function SparklineChart({ coinDetails }) {
             type="monotone"
             dataKey="price"
             stroke={chartColor}
-            fill="url(#fillPrice)"
+            fill={`url(#${gradientId})`}
             fillOpacity={1}
             strokeWidth={2}
           />

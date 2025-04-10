@@ -53,7 +53,7 @@ export function RegisterForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-cache"
+          "Cache-Control": "no-cache",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -80,60 +80,59 @@ export function RegisterForm() {
       <AlertDialogContent className="sm:max-w-md w-full shadow-lg">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl font-bold">Register Form</AlertDialogTitle>
-          <AlertDialogDescription className="mt-3">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block mb-1 font-medium">Email</label>
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  className="h-11 w-full"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
-                />
-                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
-              </div>
-
-              <div>
-                <label className="block mb-1 font-medium">Password</label>
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  className="h-11 w-full"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={isLoading}
-                />
-                {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
-              </div>
-
-              <div>
-                <label className="block mb-1 font-medium">Confirm Password</label>
-                <Input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="h-11 w-full"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={isLoading}
-                />
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
-                )}
-              </div>
-
-              {serverError && <p className="text-sm text-red-500 mt-1">{serverError}</p>}
-
-              <AlertDialogFooter className="mt-3 gap-3">
-                <AlertDialogCancel className="h-10 px-6">Cancel</AlertDialogCancel>
-                <Button type="submit" className="h-10 px-6" as={AlertDialogAction}>
-                  {isLoading ? "Loading..." : "Register"}
-                </Button>
-              </AlertDialogFooter>
-            </form>
+          <AlertDialogDescription className="mt-3 text-muted-foreground text-sm">
+            Create a new account to start using vatCoins.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label className="block mb-1 font-medium">Email</label>
+          <Input
+            type="email"
+            placeholder="Email"
+            className="h-11 w-full"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
+          />
+          {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+
+          <label className="block mb-1 font-medium">Password</label>
+          <Input
+            type="password"
+            placeholder="Password"
+            className="h-11 w-full"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+          />
+          {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+
+          <label className="block mb-1 font-medium">Confirm Password</label>
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            className="h-11 w-full"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={isLoading}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
+          )}
+
+          {serverError && <p className="text-sm text-red-500 mt-1">{serverError}</p>}
+        </form>
+        <AlertDialogFooter className="mt-3 gap-3">
+          <AlertDialogCancel className="h-10 px-6">Cancel</AlertDialogCancel>
+          <Button
+            type="submit"
+            className="h-10 px-6"
+            disabled={isLoading}
+            onClick={() => document.querySelector("form").requestSubmit()}
+          >
+            {isLoading ? "Loading..." : "Register"}
+          </Button>
+        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
