@@ -73,7 +73,7 @@ export default function CoinCard({ lastUpdated, coins, loadCoins }) {
           <CoinTable coins={paginatedCoins} />
         </div>
 
-        <div className="flex flex-col gap-4 p-4 border-t">
+        <div className="flex flex-col gap-4 p-3 border-t">
           <div className="text-sm text-muted-foreground text-center sm:text-left">
             Showing {(currentPage - 1) * limitPerPage + 1}-
             {Math.min(currentPage * limitPerPage, coins.length)} of {coins.length} coins

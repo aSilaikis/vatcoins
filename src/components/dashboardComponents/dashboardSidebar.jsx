@@ -78,14 +78,14 @@ export function AppSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#">
+                <a href="/about">
                   <Book className="mr-2 h-6 w-6" /> About
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#">
+                <a href="/contact">
                   <Mail className="mr-2 h-6 w-6" /> Contact
                 </a>
               </SidebarMenuButton>
@@ -132,17 +132,17 @@ export function AppSidebar() {
       <SidebarSeparator className="m-0" />
       <SidebarFooter>
         <div className="flex justify-around p-4">
-          <a href="https://github.com/aSilaikis?tab=repositories" className="text-gray-400 hover:text-gray-600">
-            <Github className="h-6 w-6" />
+          <a href="https://github.com/aSilaikis?tab=repositories" className="text-neutral-700 hover:text-neutral-400 ease-in-out duration-200">
+            <Github className="h-6 w-6 hover:scale-125" />
           </a>
-          <a href="https://www.instagram.com/arnas.silaikis/?utmsource=gr&igsh=bW16Z29rajFINHVx" className="text-gray-400 hover:text-gray-600">
-            <Instagram className="h-6 w-6" />
+          <a href="https://www.instagram.com/arnas.silaikis/?utmsource=gr&igsh=bW16Z29rajFINHVx" className="text-orange-700 hover:text-orange-500 ease-in-out duration-200">
+            <Instagram className="h-6 w-6 hover:scale-125" />
           </a>
-          <a href="https://www.facebook.com/profile.php?id=100007990363206" className="text-gray-400 hover:text-gray-600">
-            <Facebook className="h-6 w-6" />
+          <a href="https://www.facebook.com/profile.php?id=100007990363206" className="text-blue-700 hover:text-blue-500 ease-in-out duration-200">
+            <Facebook className="h-6 w-6 hover:scale-125" />
           </a>
-          <a href="www.linkedin.com/in/arnas-silaikis" className="text-gray-400 hover:text-gray-600">
-            <Linkedin className="h-6 w-6" />
+          <a href="www.linkedin.com/in/arnas-silaikis" className="text-sky-700 hover:text-sky-500 ease-in-out duration-200">
+            <Linkedin className="h-6 w-6 hover:scale-125" />
           </a>
         </div>
       </SidebarFooter>
